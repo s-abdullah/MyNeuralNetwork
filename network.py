@@ -59,6 +59,7 @@ class NeuralNetwork:
   def activationForward(self, A):
     return np.maximum(A, RELU)
 
+  # derivative of the RELU
   def jacobian_relu(self, matrix):
     return 1. * (matrix > RELU)
 
