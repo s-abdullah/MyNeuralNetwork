@@ -4,13 +4,10 @@ INIT = 0.01
 RELU = 0.0000
 
 class NeuralNetwork:
-
   # the input is the a list of the dimensions of the hidden layers, the len of the list will be the number of hidden layers
   # Additionally it will take the number of classes and the size of the flattened image as input which will be 3072 for CIFAR10
   # the hyper parameters are also passed here, training is just for training, all settings to be done in initi
-
   def __init__(self, numOutput, imageSize, batchSize, learningRate, layer_dimensions):
-
     # this will store the hidden layer weghts, initialized to random
     self.weights = []
     # derivative of the weights
