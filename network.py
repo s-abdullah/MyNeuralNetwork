@@ -1,6 +1,7 @@
 import numpy as np
 
 INIT = 0.01
+RELU = 0.0000
 
 class NeuralNetwork:
 
@@ -50,3 +51,84 @@ class NeuralNetwork:
     print("Batchsize: ", self.batch)
     print("Number of Layers: ", self.numLayers)
     print("Weight Matrices: ")
+
+  # linear computation
+  # A = WX + B
+  def affineForward(self, W, A, bias):
+    return np.add(np.dot(W, A), bias)
+
+  # nonlinear computation
+  # Z = ReLU(A)
+  def activationForward(self, A):
+    return np.maximum(A, RELU)
+
+  def jacobian_relu(self, matrix):
+    return 1. * (matrix > RELU)
+
+  def softmax(self, Z):
+    r, c = Z.shape
+    raisedE = np.exp(Z)
+    summed = np.sum(raisedE, axis=0)
+    for x in range(c):
+      raisedE[:, x] /= summed[x]
+    return raisedE
+
+  # my versions very not as clean so ended up using this
+  #cost function deepnotes.io/softmax-crossentropy
+  def loss(self, X, y):
+    m = y.shape[0]
+    p = self.softmax(X)
+    p = p.T
+
+    log_likelihood = -np.log(p[range(m), y])
+    loss = (np.sum(log_likelihood)) / m
+    return loss
+
+  #derivative of cost wrt softmax deepnotes.io/softmax-crossentropy
+  def delta_cross_entropy(self, X, y):
+      m = y.shape[0]
+      grad = self.softmax(X)
+
+      grad = grad.T
+      grad[range(m), y] -= 1
+      grad = grad/m
+
+      return grad.T
+
+
+  # helper class functions
+  def clean(self):
+
+    del self.dWeights[:]
+    del self.dBias[:]
+    del self.linearA[:]
+    del self.nonlinearZ[:]
+    del self.output[:]
+
+  def printWB(self):
+    for thing in self.weights:
+      print(thing.shape, thing)
+    print("bias Matrices: ")
+    for thing in self.bias:
+      print(thing.shape, thing)
+
+  def printInter(self):
+    print("Dweights Matrices: ")
+    for thing in self.dWeights:
+      print(thing.shape, thing)
+
+    print("Dbias Matrices: ")
+    for thing in self.dBias:
+      print(thing.shape, thing)
+
+    print("A Matrices: ")
+    for thing in self.linearA:
+      print(thing.shape, thing)
+
+    print("Z Matrices: ")
+    for thing in self.nonlinearZ:
+      print(thing.shape, thing)
+
+    print("output Matrices: ")
+    for thing in self.output:
+      print(thing.shape, thing)
