@@ -1,4 +1,9 @@
 import numpy as np
+import pickle
+
+
+wFile = "w"
+bFile = "b"
 
 INIT = 0.01
 RELU = 0.0000
@@ -127,3 +132,34 @@ class NeuralNetwork:
     print("output Matrices: ")
     for thing in self.output:
       print(thing.shape, thing)
+
+  # forward propogation algorithm
+  def forwardPropagation(self, X):
+    # print("Forward propogation is starting. . .")
+    inputMatrix = X
+
+    for x in range(len(self.weights)):
+      #result of first hidden layer
+
+      if (x == len(self.weights)-1):
+        linearTerm = self.affineForward(
+            self.weights[x], inputMatrix, self.bias[x])
+        self.output.append(linearTerm)
+      else:
+        linearTerm = self.affineForward(
+            self.weights[x], inputMatrix, self.bias[x])
+        nonlinearTerm = self.activationForward(linearTerm)
+        self.linearA.append(linearTerm)
+        self.nonlinearZ.append(nonlinearTerm)
+        inputMatrix = nonlinearTerm
+
+    return linearTerm
+
+
+  def save(self):
+    with open(wFile, 'wb') as f:
+      pickle.dump(self.weights, f)
+    files.download(wFile)
+    with open(bFile, 'wb') as f:
+      pickle.dump(self.bias, f)
+    files.download(bFile)
