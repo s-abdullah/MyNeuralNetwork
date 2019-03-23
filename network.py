@@ -155,11 +155,36 @@ class NeuralNetwork:
 
     return linearTerm
 
+  def backPropagation(self, y):
+    #derivative for output
+    d_cost = self.delta_cross_entropy(self.output[0], y)
+
+    # the derivatives of the output layer will always be the same
+    self.dWeights.append(np.dot(d_cost, self.nonlinearZ[-1].T))
+    self.dBias.append(d_cost)
+
+    # looping to calculate the dervaitve of all the layer weights and the biasses
+    for x in range(self.numLayers-1, -1, -1):
+      if x == 0:
+        d_cost = np.dot(self.weights[x+1].T, d_cost)
+        d_cost = np.multiply(d_cost, self.jacobian_relu(self.linearA[x]))
+
+        self.dWeights.append(np.dot(d_cost, self.input[0].T))
+        self.dBias.append(d_cost)
+      else:
+        d_cost = np.dot(self.weights[x+1].T, d_cost)
+        d_cost = np.multiply(d_cost, self.jacobian_relu(self.linearA[x]))
+
+        self.dWeights.append(np.dot(d_cost, self.nonlinearZ[x-1].T))
+        self.dBias.append(d_cost)
+    # correcting order to coresspond to the order of weights and bias
+    self.dWeights.reverse()
+    self.dBias.reverse()
+
+
 
   def save(self):
     with open(wFile, 'wb') as f:
       pickle.dump(self.weights, f)
-    files.download(wFile)
     with open(bFile, 'wb') as f:
       pickle.dump(self.bias, f)
-    files.download(bFile)
