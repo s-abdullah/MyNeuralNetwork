@@ -2,7 +2,6 @@ import numpy as np
 # only for downloading data
 import torch, torchvision
 
-import matplotlib.pyplot as plt
 import pickle
 from network import *
 from utils import *

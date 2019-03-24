@@ -1,5 +1,6 @@
 import numpy as np
 import pickle
+import matplotlib.pyplot as plt
 
 
 wFile = "w"
@@ -188,3 +189,113 @@ class NeuralNetwork:
       pickle.dump(self.weights, f)
     with open(bFile, 'wb') as f:
       pickle.dump(self.bias, f)
+
+  def train(self, X_train, X_val, y_train, y_val, iters):
+
+    loss_values = []
+    accu = []
+
+    print("Training has been initiated. . .",)
+    r, c = X_train.shape
+    batches = []
+    labels = []
+    if c % self.batch == 0:
+      print("Evenly divided batches")
+      for x in range(0, c, self.batch):
+        batches.append(X_train[:, x:x+self.batch])
+        labels.append(X_val[x:x+self.batch])
+    else:
+      print("Not evenly divided batches")
+      for x in range(0, c, self.batch):
+        if c-x < self.batch:
+          batches.append(X_train[:, c-self.batch:c])
+          labels.append(X_val[c-self.batch:c])
+        else:
+          batches.append(X_train[:, x:x+self.batch])
+          labels.append(X_val[x:x+self.batch])
+    assert len(batches) == np.ceil(c/self.batch)
+    print("number of batches: ", len(batches), len(labels))
+
+    for y in range(iters):
+      print("iteration number:", y+1)
+      for x in range(len(batches)):
+        self.input.append(batches[x])
+        self.forwardPropagation(batches[x])
+        loss_values.append(self.loss(self.output[0], labels[x]))
+
+        self.backPropagation(labels[x])
+        self.updateParameters()
+        if len(loss_values) % 10 == 0:
+            # %matplotlib notebook
+            # %matplotlib inline
+            plt.figure()
+
+            plt.ion()
+            ax = plt.gca()
+            ax.set_xlim([0, 10])
+            ax.set_ylim([0, 3])
+            plt.title("Loss over time")
+            plt.xlabel("Minibatch")
+            plt.ylabel("Loss")
+
+            ax.set_xlim([0, len(loss_values)+10])
+            ax.plot(loss_values)
+            plt.draw()
+            plt.show()
+            plt.pause(0.0001)
+
+        if len(accu) % 10 == 0:
+
+            # %matplotlib notebook
+            # %matplotlib inline
+            plt.figure()
+
+            plt.ion()
+            ax = plt.gca()
+            ax.set_xlim([0, 10])
+            ax.set_ylim([0, 100])
+            plt.title("Accuracy over time")
+            plt.xlabel("Minibatch")
+            plt.ylabel("Accuracy")
+
+            ax.set_xlim([0, len(accu)+10])
+            ax.plot(accu)
+            plt.draw()
+            plt.show()
+            plt.pause(0.0001)
+            accu.append(self.check(y_train, y_val))
+
+        if x % 10 == 0:
+          accu.append(self.check(y_train, y_val))
+
+        del self.input[:]
+      print("\n\n")
+
+    print("Training has ended. . .")
+
+  def updateParameters(self):
+    for x in range(len(self.weights)):
+      self.weights[x] = np.subtract(
+          self.weights[x], self.alpha*(self.dWeights[x]))
+      self.bias[x] = np.subtract(self.bias[x], self.alpha*(self.dBias[x]))
+    self.clean()
+
+
+  def check(self, data, label):
+    r, c = data.shape
+    batches = []
+    labels = []
+    if c % self.batch == 0:
+      #       print("Evenly divided batches")
+      for x in range(0, c, self.batch):
+        batches.append(data[:, x:x+self.batch])
+        labels.append(label[x:x+self.batch])
+    else:
+      #       print("Not evenly divided batches")
+      for x in range(0, c, self.batch):
+        if c-x < self.batch:
+          batches.append(data[:, c-self.batch:c])
+          labels.append(label[c-self.batch:c])
+        else:
+          batches.append(data[:, x:x+self.batch])
+          labels.append(label[x:x+self.batch])
