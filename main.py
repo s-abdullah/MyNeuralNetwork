@@ -14,7 +14,8 @@ OUTPUTS = 10
 IMAGESIZE = 3072
 LAYERS = [300, 250]
 ITERATIONS = 20
-
+wFile = "w"
+bFile = "b"
 
 
 
@@ -36,14 +37,30 @@ def main():
   print(train_set.shape, train_set_label.shape)
   print(validation_set.shape)
 
-  # myNN = NeuralNetwork(OUTPUTS, IMAGESIZE, BATCHSIZE, LEARNINGRATE, LAYERS)
+  #training
+  myNN = NeuralNetwork(OUTPUTS, IMAGESIZE, BATCHSIZE, LEARNINGRATE, LAYERS)
   
   # # starting the training
-  # myNN.train(train_set, train_set_label, validation_set, validation_set_label, ITERATIONS)
-  # myNN.save()
-  # myNN.clean()
+  myNN.train(train_set, train_set_label, validation_set, validation_set_label, ITERATIONS)
+  myNN.save()
+  myNN.clean()
+
+  # testing
+  myNNtest = NeuralNetwork(OUTPUTS, IMAGESIZE, BATCHSIZE, LEARNINGRATE, LAYERS)
+  myNNtest.load(wFile, bFile)
+  print("validation accuracy for current", myNNtest.check(
+    validation_set, validation_set_label))
+  print("train accuracy for current", myNNtest.check(train_set, train_set_label))
+
+  images, label, predictions = myNNtest.pred(flat_test.T, labels)
 
 
+  classes = ['plane', 'car', 'bird', 'cat', 'deer',
+           'dog', 'frog', 'horse', 'ship', 'truck']
+  for x in range(10):
+    imshow(testset[x][0])
+    print("Ground Truth: ", label[x], classes[label[x]])
+    print("prediction: ", predictions[x], classes[predictions[x]])
 
 
 

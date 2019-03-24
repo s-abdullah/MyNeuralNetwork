@@ -69,3 +69,15 @@ def process_test_set(testset):
   flat_test = np.array(flat_test)
 
   return flat_test, labels
+
+
+def imshow(img):
+  # %matplotlib notebook
+  # %matplotlib inline
+  plt.figure()
+  img = img / 2 + 0.5  # unnormalize
+  npimg = img.numpy()
+  plt.imshow(np.transpose(npimg, (1, 2, 0)))
+  plt.draw()
+  plt.show()
+  plt.pause(0.0001)

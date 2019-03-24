@@ -156,6 +156,7 @@ class NeuralNetwork:
 
     return linearTerm
 
+  # backrprop algorithm
   def backPropagation(self, y):
     #derivative for output
     d_cost = self.delta_cross_entropy(self.output[0], y)
@@ -189,6 +190,11 @@ class NeuralNetwork:
       pickle.dump(self.weights, f)
     with open(bFile, 'wb') as f:
       pickle.dump(self.bias, f)
+
+  def load(self, w, b):
+    self.weights = w
+    self.bias = b
+
 
   def train(self, X_train, X_val, y_train, y_val, iters):
 
@@ -299,3 +305,49 @@ class NeuralNetwork:
         else:
           batches.append(data[:, x:x+self.batch])
           labels.append(label[x:x+self.batch])
+
+
+  def pred(self, data, label):
+    r, c = data.shape
+    batches = []
+    labels = []
+    if c % self.batch == 0:
+      for x in range(0, c, self.batch):
+        batches.append(data[:, x:x+self.batch])
+        labels.append(label[x:x+self.batch])
+    else:
+      for x in range(0, c, self.batch):
+        if c-x < self.batch:
+          batches.append(data[:, c-self.batch:c])
+          labels.append(label[c-self.batch:c])
+        else:
+          batches.append(data[:, x:x+self.batch])
+          labels.append(label[x:x+self.batch])
+
+    accuracy = 0
+
+    c = self.batch
+    y = 0
+    inputMatrix = batches[y]
+    labl = labels[y]
+    outtie = data[:, 1]
+    for x in range(len(self.weights)):
+
+      if (x == len(self.weights)-1):
+        outtie = self.affineForward(self.weights[x], inputMatrix, self.bias[x])
+      else:
+        nonlinearTerm = self.activationForward(
+            self.affineForward(self.weights[x], inputMatrix, self.bias[x]))
+        inputMatrix = nonlinearTerm
+    distributed = self.softmax(outtie)
+
+    output = []
+
+    for x in range(c):
+        output.append(np.argmax(distributed[:, x]))
+    for x in range(c):
+      if labl[x] == output[x]:
+        accuracy += 1
+
+    self.clean()
+    return batches[y], labels[y], output
