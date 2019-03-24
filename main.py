@@ -4,7 +4,7 @@ import torch, torchvision
 
 import pickle
 from network import *
-from utils import *
+import utils as ut
 
 
 # global varibales
@@ -29,8 +29,9 @@ def main():
 
   testset = torchvision.datasets.CIFAR10(root="/data", train=False,download=True, transform=transform)
 
-  train_set, train_set_label, validation_set, validation_set_label = train_val_split(trainset)
-  flat_test, labels = process_test_set(testset)
+  train_set, train_set_label, validation_set, validation_set_label = ut.train_val_split(
+      trainset)
+  flat_test, labels = ut.process_test_set(testset)
 
 
   print("The splits are: ")
@@ -58,7 +59,7 @@ def main():
   classes = ['plane', 'car', 'bird', 'cat', 'deer',
            'dog', 'frog', 'horse', 'ship', 'truck']
   for x in range(10):
-    imshow(testset[x][0])
+    ut.imshow(testset[x][0])
     print("Ground Truth: ", label[x], classes[label[x]])
     print("prediction: ", predictions[x], classes[predictions[x]])
 
