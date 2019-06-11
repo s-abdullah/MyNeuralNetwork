@@ -15,7 +15,7 @@ The Graph progression can be seen below for the loaded weights. Unfortunately th
 ![alt text](https://github.com/s-abdullah/MyNeuralNetwork/blob/master/Images/p3.png)
 
 ## Testing
-Unforutantely due to google collab disconnect issue the netwrok could not be trained for higher accuracies. The following are the images of the validation accuracy and loss from sample model. For sample network we did save the parameters using pickle which is what we've loaded and used to give the training accuracy and prediction in the cells below. 
+Unfortunately due to google collab disconnect issue the netwrok could not be trained for higher accuracies. The following are the images of the validation accuracy and loss from sample model. For sample network we did save the parameters using pickle which is what we've loaded and used to give the training accuracy and prediction in the cells below. 
 
 
 ![alt text](https://github.com/s-abdullah/MyNeuralNetwork/blob/master/Images/w.png)
