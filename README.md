@@ -2,6 +2,8 @@
 A fully connected neural network. Working on the Cifar10 data. Only made using Numpy
 
 ## Training
+This is for a 2 hidden layer network with 300 and 250 neuraons respectively. Cross Entropy was used
+
 The Graph progression can be seen below for the loaded weights. Unfortunately these loaded weights only achieved a validation accuracy of 47.94 before google collab crash. 
 
 ![alt text](https://github.com/s-abdullah/MyNeuralNetwork/blob/master/Images/p1.png)
